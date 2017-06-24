@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		A675E9161EFD1F8F002A21D0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A675E9151EFD1F8F002A21D0 /* main.cpp */; };
+		A675E91E1EFD2C3D002A21D0 /* voice_interface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A675E91C1EFD2C3D002A21D0 /* voice_interface.cpp */; };
+		A675E9211EFD317B002A21D0 /* audio_stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A675E91F1EFD317B002A21D0 /* audio_stream.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +27,10 @@
 /* Begin PBXFileReference section */
 		A675E9121EFD1F8F002A21D0 /* VCS */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = VCS; sourceTree = BUILT_PRODUCTS_DIR; };
 		A675E9151EFD1F8F002A21D0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		A675E91C1EFD2C3D002A21D0 /* voice_interface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = voice_interface.cpp; sourceTree = "<group>"; };
+		A675E91D1EFD2C3D002A21D0 /* voice_interface.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = voice_interface.hpp; sourceTree = "<group>"; };
+		A675E91F1EFD317B002A21D0 /* audio_stream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = audio_stream.cpp; sourceTree = "<group>"; };
+		A675E9201EFD317B002A21D0 /* audio_stream.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = audio_stream.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +49,7 @@
 			children = (
 				A675E9141EFD1F8F002A21D0 /* VCS */,
 				A675E9131EFD1F8F002A21D0 /* Products */,
+				A675E9251EFD3A27002A21D0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,8 +65,19 @@
 			isa = PBXGroup;
 			children = (
 				A675E9151EFD1F8F002A21D0 /* main.cpp */,
+				A675E91C1EFD2C3D002A21D0 /* voice_interface.cpp */,
+				A675E91D1EFD2C3D002A21D0 /* voice_interface.hpp */,
+				A675E91F1EFD317B002A21D0 /* audio_stream.cpp */,
+				A675E9201EFD317B002A21D0 /* audio_stream.hpp */,
 			);
 			path = VCS;
+			sourceTree = "<group>";
+		};
+		A675E9251EFD3A27002A21D0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,7 +137,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A675E91E1EFD2C3D002A21D0 /* voice_interface.cpp in Sources */,
 				A675E9161EFD1F8F002A21D0 /* main.cpp in Sources */,
+				A675E9211EFD317B002A21D0 /* audio_stream.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,7 +149,7 @@
 		A675E9171EFD1F8F002A21D0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -153,6 +173,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -167,17 +188,31 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/include/pocketsphinx/,
+					/usr/local/include/sphinxbase/,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-v";
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
+				OTHER_LDFLAGS = (
+					"-lportaudio",
+					"-lpocketsphinx",
+					"-lsphinxbase",
+				);
 				SDKROOT = macosx;
+				WARNING_CFLAGS = "-v";
 			};
 			name = Debug;
 		};
 		A675E9181EFD1F8F002A21D0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -201,6 +236,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -209,9 +245,23 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include/,
+					/usr/local/include/pocketsphinx/,
+					/usr/local/include/sphinxbase/,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = "-v";
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
+				OTHER_LDFLAGS = (
+					"-lportaudio",
+					"-lpocketsphinx",
+					"-lsphinxbase",
+				);
 				SDKROOT = macosx;
+				WARNING_CFLAGS = "-v";
 			};
 			name = Release;
 		};

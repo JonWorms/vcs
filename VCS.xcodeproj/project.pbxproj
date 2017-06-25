@@ -82,6 +82,22 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXLegacyTarget section */
+		A6324EF41EFF5F5A0074AB4B /* VCS (make) */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = A6324EF71EFF5F5B0074AB4B /* Build configuration list for PBXLegacyTarget "VCS (make)" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			dependencies = (
+			);
+			name = "VCS (make)";
+			passBuildSettingsInEnvironment = 1;
+			productName = "VCS (make)";
+		};
+/* End PBXLegacyTarget section */
+
 /* Begin PBXNativeTarget section */
 		A675E9111EFD1F8E002A21D0 /* VCS */ = {
 			isa = PBXNativeTarget;
@@ -109,6 +125,10 @@
 				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = "Off The Farm";
 				TargetAttributes = {
+					A6324EF41EFF5F5A0074AB4B = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
 					A675E9111EFD1F8E002A21D0 = {
 						CreatedOnToolsVersion = 8.3.3;
 						ProvisioningStyle = Automatic;
@@ -128,6 +148,7 @@
 			projectRoot = "";
 			targets = (
 				A675E9111EFD1F8E002A21D0 /* VCS */,
+				A6324EF41EFF5F5A0074AB4B /* VCS (make) */,
 			);
 		};
 /* End PBXProject section */
@@ -146,6 +167,31 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		A6324EF51EFF5F5B0074AB4B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		A6324EF61EFF5F5B0074AB4B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		A675E9171EFD1F8F002A21D0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -282,6 +328,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A6324EF71EFF5F5B0074AB4B /* Build configuration list for PBXLegacyTarget "VCS (make)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6324EF51EFF5F5B0074AB4B /* Debug */,
+				A6324EF61EFF5F5B0074AB4B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		A675E90D1EFD1F8E002A21D0 /* Build configuration list for PBXProject "VCS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -298,6 +352,7 @@
 				A675E91B1EFD1F8F002A21D0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

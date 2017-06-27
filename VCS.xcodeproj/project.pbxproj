@@ -335,6 +335,7 @@
 				A6324EF61EFF5F5B0074AB4B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A675E90D1EFD1F8E002A21D0 /* Build configuration list for PBXProject "VCS" */ = {
 			isa = XCConfigurationList;

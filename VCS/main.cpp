@@ -9,34 +9,28 @@
 #include <iostream>
 #include "audio_stream.hpp"
 #include "voice_interface.hpp"
-//-I/usr/local/include -I/usr/local/include/sphinxbase  -I/usr/local/include/pocketsphinx
 
 
 
 
 int main(int argc, const char * argv[]) {
     // insert code here...
-    std::cout << "Hello, World!\n";
+    std::cout << "Starting VCS\n";
+	
     
-    /*
-    vcs::voice_interface voice_listener("Computer", [](){
+    std::string model_dir = "/usr/local/share/pocketsphinx/model/en-us/";
+    std::string model = model_dir + "en-us";
+    std::string lm    = model_dir + "en-us.lm.bin";
+    std::string dict  = model_dir + "cmudict-en-us.dict";
+    std::string mllr  = "mllr_matrix";
     
-    
-    }, [](std::string words){
-    
-        
-        return false;
-    
-    });
-    
-    */
-    
-    
-    std::string model_dir = "/Users/jonworms/Downloads/sphinx-lm/en-us/";
-    vcs::voice_interface vc(model_dir + "en-us", model_dir + "en-us.lm.bin", model_dir + "cmudict-en-us.dict", "computer");
+    //vcs::voice_interface vc(model_dir + "en-us", model_dir + "en-us.lm.bin", model_dir + "cmudict-en-us.dict", "computer");
+    vcs::voice_interface vc(model, lm, dict, mllr, "computer");
+    vc.start();
     vcs::audio_stream as(16000);
-    
-    
+	std::cout << "listening...\n";
+
+	
     as.open([&](const void *buffer, unsigned long length){
     
     

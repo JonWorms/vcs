@@ -14,11 +14,17 @@
 #include <functional>
 #include <pocketsphinx.h>
 #include <stdexcept>
+#include <vector>
 #include <iostream>
+#include <fstream>
+#include <map>
+#include <set>
 
 namespace vcs {
-    
-    
+
+	
+
+	
     class voice_interface {
         
         //std::string keyword;
@@ -31,16 +37,33 @@ namespace vcs {
         bool in_speech = false;
         bool utt_started = false;
         
+		
+		std::string command = "";
+		
+		std::map<std::string, std::function<void()>> functions;
+		
+		bool traverse_utterance(const int16_t *data, size_t n_samples);
+		bool traverse_utterance(const char *hyp, const int16_t *data, size_t n_samples);
+		
+		int16_t cache[2097152];
+		unsigned long c_write_index = 0;
+		
+		
+		
     public:
         
         //voice_interface(std::string keyword, std::function<void()> keyword_recognized, std::function<bool(std::string)> words_recognized);
         
         
-        voice_interface(std::string hmm, std::string lm, std::string dict, std::string keyword);
+        //voice_interface(std::string hmm, std::string lm, std::string dict, std::string keyword);
         
+        
+        voice_interface(std::string hmm, std::string lm, std::string dict, std::string mllr, std::string keyword);
         
         int search_for_keyword(const int16 *data, size_t n_samples);
         
+        
+        void start();
         
     };
     

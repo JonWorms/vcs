@@ -15,6 +15,7 @@
 #include <stdexcept>
 #include <vector>
 #include <queue>
+#include <iostream>
 
 namespace vcs {
     

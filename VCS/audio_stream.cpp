@@ -58,7 +58,8 @@ int pa_cb(const void *inputBuffer, void *outputBuffer,
 audio_stream::audio_stream(double sr) : sample_rate(sr) {
     
     const PaDeviceInfo *info;
-    
+	
+	cout << "Initalizing port audio...";
     // initialize port audio
     PaError err = Pa_Initialize();
     if(err != paNoError) {
@@ -73,7 +74,8 @@ audio_stream::audio_stream(double sr) : sample_rate(sr) {
     inputParameters.sampleFormat = paInt16;
     inputParameters.suggestedLatency = info->defaultHighInputLatency;
     inputParameters.hostApiSpecificStreamInfo = NULL;
-    
+	
+	
     outputParameters.device = Pa_GetDefaultOutputDevice();
     info = Pa_GetDeviceInfo(outputParameters.device);
     outputParameters.channelCount = 1;
@@ -85,6 +87,8 @@ audio_stream::audio_stream(double sr) : sample_rate(sr) {
     if(Pa_IsFormatSupported(&inputParameters, &outputParameters, sample_rate) != 0) {
         throw std::runtime_error("unsupported format");
     }
+	
+	cout << "done\n";
     
 }
 
@@ -93,7 +97,7 @@ void audio_stream::open(function<void(const void *buffer, unsigned long length)>
     
     
     received_audio_callback = callback;
-    PaError err = Pa_OpenStream(&pa_stream, &inputParameters, &outputParameters, sample_rate, 128, paNoFlag, &pa_cb, this);
+    PaError err = Pa_OpenStream(&pa_stream, &inputParameters, &outputParameters, sample_rate, 2048, paNoFlag, &pa_cb, this);
     
     
     if(err == paNoError) {

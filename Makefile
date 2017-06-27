@@ -20,5 +20,6 @@ audio_stream: builddir
 	${COMPILE} -c ${SRC}audio_stream.cpp -o ./build/audio_stream.o
 builddir:
 	mkdir -p build
+	cp mllr_matrix build/ || :
 clean:
 	rm -rdf ./build

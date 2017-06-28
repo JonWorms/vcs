@@ -27,41 +27,28 @@ namespace vcs {
 	
     class voice_interface {
         
-        //std::string keyword;
-        //std::function<void()> report_keyword_recognized;
-        //std::function<bool(std::string)> report_words_recognized;
-        
+        // callbacks
+        std::function<void()> report_keyword_recognized = [](){};
+        std::function<void(const char*)> report_command_recognized = [](const char* str){};
 
+        // cmuspinx live decoding
         ps_decoder_t *decoder = nullptr;
-
         bool in_speech = false;
         bool utt_started = false;
         
 		
-		std::string command = "";
-		
-		std::map<std::string, std::function<void()>> functions;
-		
-		bool traverse_utterance(const int16_t *data, size_t n_samples);
-		bool traverse_utterance(const char *hyp, const int16_t *data, size_t n_samples);
-		
-		int16_t cache[2097152];
-		unsigned long c_write_index = 0;
-		
-		
 		
     public:
         
-        //voice_interface(std::string keyword, std::function<void()> keyword_recognized, std::function<bool(std::string)> words_recognized);
+        
+        voice_interface(const char *hmm, const char *lm, const char *dict, const char *mllr, const char *keyword);
         
         
-        //voice_interface(std::string hmm, std::string lm, std::string dict, std::string keyword);
-        
-        
-        voice_interface(std::string hmm, std::string lm, std::string dict, std::string mllr, std::string keyword);
-        
+        // input data from audio
         int search_for_keyword(const int16 *data, size_t n_samples);
         
+        void on_keyword_recognized(std::function<void()> func);
+        void on_command_recognized(std::function<void(const char*)> func);
         
         void start();
         

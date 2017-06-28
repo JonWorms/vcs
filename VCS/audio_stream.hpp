@@ -16,34 +16,32 @@
 #include <vector>
 #include <queue>
 #include <iostream>
+#include <sndfile.h>
 
 namespace vcs {
+    
+    typedef std::function<void(const void*, unsigned long)> as_callback;
     
     class audio_stream {
         double sample_rate;
         
+        // PortAudio / Input
         PaStream *pa_stream = nullptr;
         PaStreamParameters inputParameters, outputParameters;
-        std::function<void(const void*, unsigned long)> received_audio_callback;
+        as_callback received_audio_callback;
         
-        
+        // Sndfile / Output
         
         
         
     public:
         
-        /* audio playback loop
-        std::queue<std::vector<int16_t>> delay_playback;
-        int sample_size;
-        */
         audio_stream(double audio_sample_rate);
-        void open(std::function<void(const void *buffer, unsigned long length)> callback);
+        void open(as_callback callback);
         
-        
-        void portaudio_callback(const void *inputBuffer, void *outputBuffer,
-                                unsigned long framesPerBuffer,
-                                const PaStreamCallbackTimeInfo* timeInfo,
-                                PaStreamCallbackFlags statusFlags);
+        // playback / sound files
+        int load_sound_file(std::string path, std::string name);
+        void play_sound_file(std::string name);
         
     };
     

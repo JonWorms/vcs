@@ -11,7 +11,6 @@
 using namespace std;
 using namespace vcs;
 
-const char *keyword_search = "keyword";
 
 
 // this is here because there does not appear to be any way to set a kws without using a file
@@ -46,82 +45,45 @@ int ps_set_kws(ps_decoder_t *ps, const char *name, const vector<string> &keyphra
 
 
 
+cmd_ln_t* init(const char *hmm, const char *dict, const char *mllr) {
+    cmd_ln_t *config = nullptr;
+    if(mllr == NULL) {
+        config = cmd_ln_init(NULL, ps_args(), TRUE, "-hmm", hmm, "-dict", dict, "-logfn", "/dev/null", NULL);
+    } else {
+        config = cmd_ln_init(NULL, ps_args(), TRUE, "-hmm", hmm, "-dict", dict, "-mllr", mllr, "-logfn", "/dev/null", NULL);
+    }
+    return config;
+}
 
-voice_interface::voice_interface(std::string hmm, std::string lm, std::string dict, std::string mllr, std::string keyword) {
- 
 
+voice_interface::voice_interface(const char *hmm, const char *lm, const char *dict, const char *mllr, const char *keyword) {
+
+    
 	cout << "Initalizing Pocketsphinx...";
+    
 	cmd_ln_t *config = nullptr;
-	config = cmd_ln_init(NULL, ps_args(), TRUE,
-						 "-hmm", hmm.c_str(),
-						 //"-lm", lm.c_str(),
-						 "-dict", dict.c_str(),
-						 "-mllr", mllr.c_str(),
-						 "-logfn", "/dev/null",
-						 NULL);
-	
-	
-	
-	
+    config = init(hmm, dict, mllr);
 	if(config == nullptr) {
 		throw runtime_error("failed to create pockesphinx configuration");
 	}
-	
 	
 	
 	decoder = ps_init(config);
 	if(decoder == nullptr) {
 		throw runtime_error("failed to initialize decoder");
 	}
-	
-	
+
+    if(ps_set_lm_file(decoder, "command", lm) == -1) {
+        throw runtime_error("failed to load lm file");
+    }
+
 	ps_set_keyphrase(decoder, "keyword", "computer");
 	ps_set_search(decoder, "keyword");
 	
-    //ps_set_kws(decoder, "command", {"lights on", "lights off", "alarm", "set"});
-	
-    ps_set_lm_file(decoder, "command", lm.c_str());
-	
-
-	/*
-	for(auto sub: subjects) {
-		vector<float> p_thresholds;
-		for(unsigned long i = 0 ; i < predicates[sub].size() ; i++) {
-			p_thresholds.push_back(1.0);
-		}
-		ps_set_kws(decoder, sub.c_str(), predicates[sub], p_thresholds);
-	}*/
-	
-	
-	
-	
-	/*
-	vocabulary.push_back("turn");
-	vocabulary.push_back("on");
-	vocabulary.push_back("off");
-	vocabulary.push_back("the");
-	vocabulary.push_back("lights");
-	vocabulary.push_back("music");
-	vocabulary.push_back("reset");
-	vocabulary.push_back("set");
-	vocabulary.push_back("alarm");
-	vocabulary.push_back("seven");
-	
-	
-	
-	
-	for(int i = 0 ; i < vocabulary.size() ; i++) {
-		vocab_thresholds.push_back(2.0);
-	}
-	
-	ps_set_kws(decoder, "commands", vocabulary, vocab_thresholds);
-	*/
-	//ps_start_utt(decoder);
-	
 	cout << "done\n";
 	
-	
-	
+    
+    
 }
 
 
@@ -131,51 +93,18 @@ void voice_interface::start() {
 }
 
 
+void voice_interface::on_keyword_recognized(std::function<void ()> func) {
+    report_keyword_recognized = func;
+}
 
-
-
-bool voice_interface::traverse_utterance(const int16_t *data, size_t n_samples) {
-	cout << "meow" << endl;
-	ps_process_raw(decoder, data, n_samples, false, false);
-	const char *hyp = ps_get_hyp(decoder, NULL);
-	if(hyp != NULL) {
-		string hyp_str(hyp);
-		cout << "command: ";
-		command += ("." + hyp_str);
-		cout << command;
-		cout << endl;
-		ps_set_search(decoder, command.c_str());
-		return traverse_utterance(data, n_samples);
-	}
-	cout << "break" << endl;
-	return false;
+void voice_interface::on_command_recognized(std::function<void(const char*)> func) {
+    report_command_recognized = func;
 }
 
 
-bool voice_interface::traverse_utterance(const char *hyp, const int16_t *data, size_t n_samples) {
-	string hyp_str;
-
-	unsigned long i = 0;
-	while(hyp[i] != 0 && hyp[i] != ' ') {
-		hyp_str.push_back(hyp[i]);
-		i++;
-	}
-	
-	command = (command.empty()) ? hyp_str : (command + "." + hyp_str);
-	cout << "command: ";
-	cout << command;
-	cout << endl;
-	ps_set_search(decoder, command.c_str());
-
-	return traverse_utterance(data, n_samples);
-}
 
 int voice_interface::search_for_keyword(const int16 *data, size_t n_samples) {
 
-	
-	
-	
-	
     ps_process_raw(decoder, data, n_samples, false, false);
     in_speech = ps_get_in_speech(decoder);
 	
@@ -187,16 +116,14 @@ int voice_interface::search_for_keyword(const int16 *data, size_t n_samples) {
         ps_end_utt(decoder);
         const char *hyp = ps_get_hyp(decoder, NULL);
         if (hyp != NULL) {
-            cout << hyp << endl;
             if(strcmp("keyword", ps_get_search(decoder)) == 0) {
+                report_keyword_recognized();
                 ps_set_search(decoder, "command");
-				cout << "Listening for command...\n";
 			} else {
+                report_command_recognized(hyp);
                 ps_set_search(decoder, "keyword");
-				cout << "Listening for keyword...\n";
             }
         }
-        
         ps_start_utt(decoder);
         utt_started = false;
 

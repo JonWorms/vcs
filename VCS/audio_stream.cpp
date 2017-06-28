@@ -19,38 +19,8 @@ int pa_cb(const void *inputBuffer, void *outputBuffer,
                               PaStreamCallbackFlags statusFlags,
                               void *userData) {
     
-    
-    vcs::audio_stream *as = (vcs::audio_stream*) userData;
-    as->portaudio_callback(inputBuffer, outputBuffer, framesPerBuffer, timeInfo, statusFlags);
-    
-    
-    /*
-    
-    int16_t *in = (int16_t*) inputBuffer;
-    int16_t *out = (int16_t*) outputBuffer;
-    
-    
-    vector<int16_t> input;
-    const unsigned long numBytes = (framesPerBuffer * 1);
-    int i = 0;
-    while(i < numBytes) {
-        input.push_back(in[i]);
-        i++;
-    }
-    
-    as->delay_playback.push(input);
-    
-    if(as->delay_playback.size() > 100) {
-        vector<int16_t> output = as->delay_playback.front();
-        as->delay_playback.pop();
-        
-        for(int i = 0 ; i < output.size() ; i++) {
-            *out++ = output[i];
-        }
-        
-    }
-    */
-    
+    as_callback cb = *((as_callback*) userData);
+    cb(inputBuffer, framesPerBuffer);
     return 0;
 }
 
@@ -83,10 +53,12 @@ audio_stream::audio_stream(double sr) : sample_rate(sr) {
     outputParameters.suggestedLatency = info->defaultHighOutputLatency;
     outputParameters.hostApiSpecificStreamInfo = NULL;
     
+    
     // are they supported?
     if(Pa_IsFormatSupported(&inputParameters, &outputParameters, sample_rate) != 0) {
         throw std::runtime_error("unsupported format");
     }
+    
 	
 	cout << "done\n";
     
@@ -97,7 +69,7 @@ void audio_stream::open(function<void(const void *buffer, unsigned long length)>
     
     
     received_audio_callback = callback;
-    PaError err = Pa_OpenStream(&pa_stream, &inputParameters, &outputParameters, sample_rate, 2048, paNoFlag, &pa_cb, this);
+    PaError err = Pa_OpenStream(&pa_stream, &inputParameters, &outputParameters, sample_rate, 2048, paNoFlag, &pa_cb, &received_audio_callback);
     
     
     if(err == paNoError) {
@@ -112,10 +84,12 @@ void audio_stream::open(function<void(const void *buffer, unsigned long length)>
 }
 
 
-void audio_stream::portaudio_callback(const void *inputBuffer, void *outputBuffer, unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo *timeInfo, PaStreamCallbackFlags statusFlags) {
+
+int audio_stream::load_sound_file(std::string path, std::string name) {
     
-    received_audio_callback(inputBuffer, framesPerBuffer);
-    
+    return 0;
 }
 
-
+void audio_stream::play_sound_file(std::string name) {
+    
+}

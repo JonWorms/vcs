@@ -7,7 +7,7 @@ LIB=-L/usr/local/lib/
 
 SRC=./VCS/
 
-LIB+=-lportaudio -lpocketsphinx -lsphinxbase
+LIB+=-lportaudio -lpocketsphinx -lsphinxbase -lsndfile
 
 COMPILE=${CXX} ${CXXFLAGS} ${INC}
 

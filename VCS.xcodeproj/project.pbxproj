@@ -249,6 +249,7 @@
 					"-lportaudio",
 					"-lpocketsphinx",
 					"-lsphinxbase",
+					"-lsndfile",
 				);
 				SDKROOT = macosx;
 				WARNING_CFLAGS = "-v";
@@ -305,6 +306,7 @@
 					"-lportaudio",
 					"-lpocketsphinx",
 					"-lsphinxbase",
+					"-lsndfile",
 				);
 				SDKROOT = macosx;
 				WARNING_CFLAGS = "-v";

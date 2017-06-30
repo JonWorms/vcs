@@ -20,6 +20,7 @@
 #include <sndfile.h>
 #include <samplerate.h>
 #include <thread>
+#include <mutex>
 
 namespace vcs {
     

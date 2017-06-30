@@ -23,7 +23,7 @@ int main(int argc, const char * argv[]) {
     std::string dict  = model_dir + "cmudict-en-us.dict";
     
     
-    vcs::voice_interface vc(model.c_str(), lm.c_str(), dict.c_str(), NULL, "computer");
+    vcs::voice_interface vc(model.c_str(), lm.c_str(), dict.c_str(), "mllr_matrix", "computer");
     vcs::audio_stream as(16000);
     
     

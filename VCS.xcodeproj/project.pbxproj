@@ -250,6 +250,7 @@
 					"-lpocketsphinx",
 					"-lsphinxbase",
 					"-lsndfile",
+					"-lsamplerate",
 				);
 				SDKROOT = macosx;
 				WARNING_CFLAGS = "-v";
@@ -307,6 +308,7 @@
 					"-lpocketsphinx",
 					"-lsphinxbase",
 					"-lsndfile",
+					"-lsamplerate",
 				);
 				SDKROOT = macosx;
 				WARNING_CFLAGS = "-v";

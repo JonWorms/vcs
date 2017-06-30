@@ -21,30 +21,31 @@ int main(int argc, const char * argv[]) {
     std::string model = model_dir + "en-us";
     std::string lm    = model_dir + "en-us.lm.bin";
     std::string dict  = model_dir + "cmudict-en-us.dict";
-    std::string mllr  = "/Users/jonworms/Desktop/mllr_matrix";
     
     
-    vcs::voice_interface vc(model.c_str(), lm.c_str(), dict.c_str(), mllr.c_str(), "computer");
+    vcs::voice_interface vc(model.c_str(), lm.c_str(), dict.c_str(), NULL, "computer");
+    vcs::audio_stream as(16000);
     
     
-    vc.on_keyword_recognized([](){
+    as.received_audio_callback = [&](const void *buffer, unsigned long length){
+        vc.search_for_keyword((int16*) buffer, length);
+    };
+    
+    as.load_sound_file("computerbeep_75.wav", "beep");
+    
+    vc.on_keyword_recognized([&](){
         std::cout << "keyword recognized" << std::endl;
+        as.play_sound_file("beep");
     });
     
     vc.on_command_recognized([](const char *str){
         std::cout << str << std::endl;
     });
     
-    vc.start();
-    vcs::audio_stream as(16000);
 
     
-    
-    
-    
-    as.open([&](const void *buffer, unsigned long length){
-        vc.search_for_keyword((int16*) buffer, length);
-    });
+    vc.start();
+    as.open();
     
     char q;
     std::cin >> q;

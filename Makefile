@@ -7,7 +7,7 @@ LIB=-L/usr/local/lib/
 
 SRC=./VCS/
 
-LIB+=-lportaudio -lpocketsphinx -lsphinxbase -lsndfile
+LIB+=-lportaudio -lpocketsphinx -lsphinxbase -lsndfile -lsamplerate
 
 COMPILE=${CXX} ${CXXFLAGS} ${INC}
 
@@ -16,8 +16,12 @@ all: voice_interface audio_stream
 voice_interface: builddir
 	${COMPILE} -c ${SRC}voice_interface.cpp -o ./build/voice_interface.o ${LIB}
 
-audio_stream: builddir
+audio_stream: builddir audio_file
 	${COMPILE} -c ${SRC}audio_stream.cpp -o ./build/audio_stream.o
+	
+audio_file: builddir
+	cp computerbeep_75.wav build/ || :
+	
 builddir:
 	mkdir -p build
 	cp mllr_matrix build/ || :

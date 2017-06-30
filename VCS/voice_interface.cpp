@@ -56,7 +56,7 @@ cmd_ln_t* init(const char *hmm, const char *dict, const char *mllr) {
 }
 
 
-voice_interface::voice_interface(const char *hmm, const char *lm, const char *dict, const char *mllr, const char *keyword) {
+voice_interface::voice_interface(const char *hmm, const char *lm, const char *dict, const char *mllr, const char *keyword, size_t bs) : buffer(bs, 0) {
 
     
 	cout << "Initalizing Pocketsphinx...";
@@ -90,6 +90,13 @@ voice_interface::voice_interface(const char *hmm, const char *lm, const char *di
 
 void voice_interface::start() {
     ps_start_utt(decoder);
+    
+    std::thread([&](){
+        while(true) {
+            search_for_keyword();
+        }
+    }).detach();
+    
 }
 
 
@@ -102,10 +109,35 @@ void voice_interface::on_command_recognized(std::function<void(const char*)> fun
 }
 
 
+// const int16 *data, size_t n_samples
+void voice_interface::search_for_keyword() {
 
-int voice_interface::search_for_keyword(const int16 *data, size_t n_samples) {
-
-    ps_process_raw(decoder, data, n_samples, false, false);
+    size_t n_samples = (buffer_size < 2048) ? buffer_size : 2048;
+    
+    if(n_samples == 0) {
+        return;
+    }
+    
+    if(read_index + n_samples < buffer.size()) {
+        ps_process_raw(decoder, &buffer[read_index], n_samples, false, false);
+        read_index += n_samples;
+        
+        if(read_index == buffer.size()) {
+            read_index = 0;
+        }
+        
+    } else {
+        size_t a_samples = buffer.size() - read_index;
+        ps_process_raw(decoder, &buffer[read_index], a_samples, false, false);
+        a_samples = n_samples - a_samples;
+        ps_process_raw(decoder, &buffer[0], a_samples, false, false);
+        read_index = a_samples;
+    }
+    
+    buffer_size -= n_samples;
+    
+    
+    
     in_speech = ps_get_in_speech(decoder);
 	
     if(in_speech && !utt_started) {
@@ -129,5 +161,43 @@ int voice_interface::search_for_keyword(const int16 *data, size_t n_samples) {
 
     }
     
-    return 0;
 }
+
+
+
+void voice_interface::enqueue_audio_data(const int16_t *data, size_t n_samples) {
+    unsigned long w1 = write_index + n_samples;
+    unsigned long w2 = (w1 > buffer.size()) ? w1 - buffer.size() : 0;
+    
+    if(w2 > 0) {
+        w1 = buffer.size();
+    }
+    
+    int i = 0;
+    while(write_index < w1) {
+        buffer[write_index] = data[i];
+        i++;
+        write_index++;
+    }
+    if(write_index == buffer.size()) {
+        write_index = 0;
+    }
+    
+    while(write_index < w2) {
+        buffer[write_index] = data[i];
+        i++;
+        write_index++;
+    }
+    
+    buffer_size += n_samples;
+    if(buffer_size > buffer.size()) {
+        read_index = write_index;
+        buffer_size = buffer.size();
+        cout << "ring buffer overflow" << endl;
+    }
+    
+}
+
+
+
+

@@ -19,6 +19,7 @@
 #include <fstream>
 #include <map>
 #include <set>
+#include <thread>
 
 namespace vcs {
 
@@ -36,17 +37,23 @@ namespace vcs {
         bool in_speech = false;
         bool utt_started = false;
         
-		
-		
+        std::vector<int16_t> buffer;
+        unsigned long read_index = 0;
+        unsigned long write_index = 0;
+        size_t buffer_size = 0;
+        
+        
+        void search_for_keyword();
+        
+        
     public:
         
         
-        voice_interface(const char *hmm, const char *lm, const char *dict, const char *mllr, const char *keyword);
+        voice_interface(const char *hmm, const char *lm, const char *dict, const char *mllr, const char *keyword, size_t buffer_size = 9000);
         
         
         // input data from audio
-        int search_for_keyword(const int16 *data, size_t n_samples);
-        
+        void enqueue_audio_data(const int16_t *data, size_t n_samples);
         void on_keyword_recognized(std::function<void()> func);
         void on_command_recognized(std::function<void(const char*)> func);
         

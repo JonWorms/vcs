@@ -23,15 +23,18 @@ int main(int argc, const char * argv[]) {
     std::string dict  = model_dir + "cmudict-en-us.dict";
     
     
-    vcs::voice_interface vc(model.c_str(), lm.c_str(), dict.c_str(), "mllr_matrix", "computer");
+    vcs::voice_interface vc(model.c_str(), lm.c_str(), dict.c_str(), "/Users/jonworms/Desktop/mllr_matrix", "computer");
     vcs::audio_stream as(16000);
     
     
+    
     as.received_audio_callback = [&](const void *buffer, unsigned long length){
-        vc.search_for_keyword((int16*) buffer, length);
+        
+        //vc.search_for_keyword((int16*) buffer, length);
+        vc.enqueue_audio_data((int16_t*)buffer, length);
     };
     
-    as.load_sound_file("computerbeep_75.wav", "beep");
+    as.load_sound_file("/Users/jonworms/Desktop/computerbeep_75.wav", "beep");
     
     vc.on_keyword_recognized([&](){
         std::cout << "keyword recognized" << std::endl;

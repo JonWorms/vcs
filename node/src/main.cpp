@@ -3,9 +3,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "alsa/asoundlib.h"
+#include "audio.h"
+#include <vector>
+#include <iostream>
+//#include "alsa/asoundlib.h"
 
-
+/*
 void print_card_info(snd_ctl_card_info_t *info)
 {
         printf("Card #%d: id=%s, driver=%s, name=%s, longname=%s, mixername=%s, components=%s\n",
@@ -146,11 +149,27 @@ int get_input_devices(int** input_devices) {
 
 	return 0;
 }
-
+*/
 int main(int argc, char *argv[]) {
 
-	printf("number of audio devices: %d\n", get_num_audio_devices());
+	printf("number of audio devices: %d\n", audio::device::count());
 
+	std::vector<audio::device*> devices = audio::device::devices();
+
+
+	while(devices.size() > 0) {
+		audio::device *device = devices.back();
+		std::cout << device->name();
+		std::cout << " inputs: ";
+		std::cout << device->get_num_inputs();
+		std::cout << " outputs: ";
+		std::cout << device->get_num_outputs();
+		std::cout << std::endl;
+		devices.pop_back();
+		delete device;
+	}
+	
+	/*
 	int *input_devices = NULL;
 	int num_inputs = get_input_devices(&input_devices);
 	int d;
@@ -161,7 +180,7 @@ int main(int argc, char *argv[]) {
 	if(input_devices) {
 		free(input_devices);
 	}
-	
+	*/
 	
 	return 0;
 }

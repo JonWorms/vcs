@@ -168,6 +168,13 @@ int main(int argc, char *argv[]) {
 		devices.pop_back();
 		delete device;
 	}
+
+	if(argc == 2) {
+		std::string argfile;
+		argfile.assign(argv[1]);
+		audio::file a_file(argfile, SFM_READ);
+	}
+	
 	
 	/*
 	int *input_devices = NULL;

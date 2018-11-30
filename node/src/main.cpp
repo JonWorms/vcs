@@ -6,6 +6,8 @@
 #include "audio.h"
 #include <vector>
 #include <iostream>
+#include "file.hpp"
+
 //#include "alsa/asoundlib.h"
 
 /*
@@ -156,23 +158,24 @@ int main(int argc, char *argv[]) {
 
 	std::vector<audio::device*> devices = audio::device::devices();
 
+	audio::device *playback_device = NULL;
 
 	while(devices.size() > 0) {
 		audio::device *device = devices.back();
-		std::cout << device->name();
-		std::cout << " inputs: ";
-		std::cout << device->get_num_inputs();
-		std::cout << " outputs: ";
-		std::cout << device->get_num_outputs();
-		std::cout << std::endl;
 		devices.pop_back();
-		delete device;
+		if(device->name() == "USB Audio DAC") {
+			std::cout << "playback device saved" << std::endl;
+			playback_device = device;
+		} else {
+			delete device;
+		}
 	}
 
 	if(argc == 2) {
 		std::string argfile;
 		argfile.assign(argv[1]);
 		audio::file a_file(argfile, SFM_READ);
+		playback_device->play_file(&a_file);
 	}
 	
 	
@@ -188,6 +191,10 @@ int main(int argc, char *argv[]) {
 		free(input_devices);
 	}
 	*/
+
+	if(playback_device) {
+		delete playback_device;
+	}
 	
 	return 0;
 }

@@ -5,6 +5,9 @@ using namespace std;
 
 device::device(int id) : device_id(id) {
 	snprintf(device_descriptor, sizeof(device_descriptor), "hw:%d", id);
+	std::cout << "opening device ";
+	std::cout << device_descriptor;
+	std::cout << std::endl;
 	snd_ctl_card_info_malloc(&info);
 	
 	if(!info) {
@@ -61,13 +64,15 @@ string device::name() {
 		device_name.assign(snd_ctl_card_info_get_name(info)); // pretty sure this does not leak
 	}
 
+	device::close();
+
 	return device_name;
 	
 }
 
 
 void device::get_num_io() {
-
+	device::open();
 	void **hints;
 	if(!snd_device_name_hint(device_id, "pcm", &hints)) {
 		void **hint = hints;
@@ -92,6 +97,7 @@ void device::get_num_io() {
 			hint++;
 		}		
 	}
+	device::close();
 }
 
 
@@ -115,7 +121,33 @@ int device::get_num_outputs() {
 
 
 
+void device::play_file(audio::file *file) {
+	output_stream os(device_descriptor, file->format(), file->sample_rate(), file->channels());
+	short *fd = file->load();
+	short *front = fd;
+	unsigned int chnls = file->channels();
+	snd_pcm_sframes_t frames_remaining = file->frames();
+	os.open([&](snd_pcm_sframes_t played, snd_pcm_sframes_t *remaining) -> short* {
+		frames_remaining -= played;
 
+		if(frames_remaining > 0) {
+			front += (played * chnls);
+			*remaining = frames_remaining;
+			return front;
+		} else {
+			*remaining = 0;
+			free(fd);
+			return NULL;
+		}
+		
+
+		
+		
+
+		
+	});
+	os.close();
+}
 
 
 

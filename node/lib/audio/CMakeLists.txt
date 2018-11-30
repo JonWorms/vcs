@@ -13,5 +13,5 @@ endif()
 include_directories("include")
 
 
-add_library(audio src/device.cpp src/file.cpp)
+add_library(audio src/device.cpp src/file.cpp src/output_stream.cpp)
 target_link_libraries(audio "asound" "sndfile")

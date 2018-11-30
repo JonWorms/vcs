@@ -5,6 +5,9 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "file.hpp"
+#include "input_stream.hpp"
+#include "output_stream.hpp"
 
 namespace audio {
 
@@ -12,7 +15,7 @@ namespace audio {
 	private:
 	
 		int device_id;
-		char device_descriptor[6];
+		char device_descriptor[12];
 		snd_ctl_t *handle = NULL;
 		snd_ctl_card_info_t *info = NULL;
 		snd_ctl_elem_list_t *elements = NULL;
@@ -28,10 +31,15 @@ namespace audio {
 
 
 		void get_num_io();
+
+		
+
+		
+		
 	public:
 		static int count();
 		static std::vector<device*> devices();
-
+	
 		
 	
 		device(int id);
@@ -40,7 +48,7 @@ namespace audio {
 		std::string name();
 
 		
-		
+		void play_file(file *f);
 		int get_num_inputs();
 		int get_num_outputs();
 

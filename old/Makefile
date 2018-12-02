@@ -1,4 +1,4 @@
-CXX = g++ -v
+ CXX = g++ -v
 CXXFLAGS = -std=c++11 -Wall -pthread
 
 
@@ -27,3 +27,4 @@ builddir:
 	cp mllr_matrix build/ || :
 clean:
 	rm -rdf ./build
+ 

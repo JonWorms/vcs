@@ -33,10 +33,7 @@ void stream::open_pcm_device(snd_pcm_stream_t type) {
 		throw e;
 	}
 
-	// allocate software parameters
-	if ((err = snd_pcm_sw_params_malloc(&sw_parameters)) < 0) {
-		throw audio_exception("could not allocate software parameters", err);
-	}
+
 
 }
 
@@ -85,4 +82,9 @@ void stream::open(snd_pcm_stream_t type) {
 	if ((err = snd_pcm_prepare(handle)) < 0) {
 		throw audio_exception("could not prepare device", err);
 	}
+}
+
+void stream::close() {
+	std::cout << "closing stream" << std::endl;
+	snd_pcm_close(handle);
 }

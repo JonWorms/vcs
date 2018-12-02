@@ -17,14 +17,13 @@ namespace audio {
 			// returns front of buffer
 			// arg 0 is total frames played since last call
 			// arg 1 is a pointer to be set indicating how my frames remain in data buffer 
-			typedef std::function<short*(snd_pcm_sframes_t, snd_pcm_sframes_t*)> callback;
+			typedef std::function<short*(unsigned long, unsigned long*)> callback;
 
-
-			
 			output_stream(char *descriptor, audio::format f, unsigned int sr, unsigned int c);
 			~output_stream();
+
 			void open(callback cb);
-			void close();
+			void close() override;
 
 
 

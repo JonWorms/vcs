@@ -5,11 +5,7 @@ using namespace std;
 
 device::device(int id) : device_id(id) {
 	snprintf(device_descriptor, sizeof(device_descriptor), "hw:%d", id);
-	std::cout << "opening device ";
-	std::cout << device_descriptor;
-	std::cout << std::endl;
 	snd_ctl_card_info_malloc(&info);
-	
 	if(!info) {
 		fprintf(stderr, "could not laod snd_ctl_info\n");
 	}
@@ -113,30 +109,21 @@ int device::get_num_outputs() {
 	if(num_outputs < 0) {
 		device::get_num_io();
 	}
-
 	return num_outputs;
 }
 
 
 
-
-void device::play_file(audio::file *file) {
-	output_stream os(device_descriptor, file->format(), file->sample_rate(), file->channels());
-	short *fd = file->read_data();
-	short *front = fd;
-	unsigned int chnls = file->channels();
-	snd_pcm_sframes_t frames_remaining = file->frames();
-	os.open([&](snd_pcm_sframes_t played, snd_pcm_sframes_t *remaining) -> short* {
-		frames_remaining -= played;
-
-		if(frames_remaining > 0) {
-			front += (played * chnls);
-			*remaining = frames_remaining;
+void device::play_data(short *data, unsigned long total_frames) {
+	short *front = data;
+	device::play([&](unsigned long frames_played, unsigned long *frames_remaining) -> short* {
+		total_frames -= frames_played;
+		if(total_frames > 0) {
+			front += (frames_played * device::channels);
+			*frames_remaining = total_frames;
 			return front;
 		} else {
-			*remaining = 0;
-			free(fd);
-			os.close();
+			*frames_remaining = 0;
 			return NULL;
 		}
 	});
@@ -144,6 +131,30 @@ void device::play_file(audio::file *file) {
 }
 
 
+void device::play_file(audio::file *file) {
+	device::configure(file->format(), file->sample_rate(), file->channels());
+	short *file_data = file->read_data();
+	device::play_data(file_data, file->frames());
+	free(file_data);
+}
+
+void device::configure(audio::format f, unsigned int sr, unsigned int ch) {
+	device::format = f;
+	device::sample_rate = sr;
+	device::channels = ch;
+}
+
+void device::capture(input_stream::callback cb) {
+	input_stream stream(device_descriptor, device::format, device::sample_rate, device::channels);
+	stream.open(cb);
+	stream.close();
+}
+
+void device::play(output_stream::callback cb) {
+	output_stream stream(device_descriptor, device::format, device::sample_rate, device::channels);
+	stream.open(cb);
+	stream.close();
+}
 
 
 int device::count() {
@@ -155,18 +166,3 @@ int device::count() {
 	return count;	
 }
 
-/*
-vector<device*> audio::devices() {
-
-	
-
-	vector<device*> d;
-
-	int card = -1;
-	while(snd_card_next(&card) >= 0 && card >= 0) {
-		d.push_back(new device(card));
-	}
-	 
-	return d;
-}
-*/

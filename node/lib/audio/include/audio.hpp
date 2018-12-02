@@ -13,7 +13,8 @@ namespace audio {
 
 		int card = -1;
 		while(snd_card_next(&card) >= 0 && card >= 0) {
-			d.push_back(new audio::device(card));
+			audio::device *device = new audio::device(card);
+			d.push_back(device);
 		}
 	
 		return d;

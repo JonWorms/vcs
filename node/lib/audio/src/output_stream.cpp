@@ -11,16 +11,12 @@ output_stream::~output_stream() {}
 
 void output_stream::open(callback cb) {
 	stream::open(SND_PCM_STREAM_PLAYBACK);
-	snd_pcm_sframes_t frames = 0;
-	snd_pcm_sframes_t frames_in_buffer = 0;
+	unsigned long frames = 0;
+	unsigned long frames_in_buffer = 0;
 	int err = 0;
-
-
 	
 	short *buf = cb(0, &frames_in_buffer);
 	while(frames_in_buffer > 0) {
-		std::cout << "frames in buffer: ";
-		std::cout << frames_in_buffer << std::endl;
 		if ((err = snd_pcm_wait(handle, 1000)) < 0) {
 			throw audio_exception("device timed out", err);		
 		}
@@ -45,12 +41,12 @@ void output_stream::open(callback cb) {
 		
 	} 
 
-
 }
 
 
 void output_stream::close() {
+	//std::cout << "draining output stream" << std::cout;
 	snd_pcm_drain(handle);
-	snd_pcm_close(handle);
+	stream::close();
 }
 

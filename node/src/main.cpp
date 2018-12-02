@@ -17,37 +17,76 @@ int main(int argc, char *argv[]) {
 
 
 	audio::device *playback_device = audio::get_device_named("USB Audio DAC");
-	if(!playback_device) {
-		std::cerr << "could not get device" << std::endl;
-		exit(1);
-	}
-
+	audio::device *capture_device = audio::get_device_named("USB audio CODEC");
 
 
 	
+	if(!playback_device) {
+		std::cerr << "could not get playback device" << std::endl;
+		exit(1);
+	}
+
+	if(!capture_device) {
+		std::cerr << "could not get capture device" << std::endl;
+		exit(1);
+	}
 
 	if(argc == 2) {
-		std::string argfile;
-		argfile.assign(argv[1]);
-		audio::file a_file(argfile);
-		short *a_data = a_file.read_data();
-
-		audio::file o_file("test.wav", a_file.format(), a_file.channels(), a_file.sample_rate());
-
-
-		short *w_buf = a_data;
-		unsigned long frames_written = 0;
-		unsigned long write_len = 1024;
-		while(frames_written < a_file.frames()) {
-			unsigned long write = std::min(write_len, a_file.frames() - frames_written);
-			write = o_file.write_data(w_buf, write);
-			frames_written += write;
-			w_buf += (write * a_file.channels());
-		}
-		o_file.flush();
-		
-		delete a_data;
+		std::string path(argv[1]);
+		audio::file a_file(path);
+		playback_device->play_file(&a_file);
 	}
+	
+
+
+	audio::format fmt = audio::format::pcm_s16_le;
+	unsigned long sample_rate = 48000;
+	unsigned long channels = 1;
+	unsigned long capture_seconds = 5;
+	unsigned long frames_to_capture = sample_rate * capture_seconds;
+	short buffer[channels * frames_to_capture];
+
+	// configure devices
+	playback_device->configure(fmt, sample_rate, channels);
+	capture_device->configure(fmt, sample_rate, channels);
+		
+
+	// capture 5 seconds of audio
+	std::cout << "starting capture" << std::endl;
+	unsigned long capture_size = 128; // frames
+	unsigned long pos = 0;
+	capture_device->capture([&](unsigned long frames_read, unsigned long *read_frames)->short*{
+		pos += (frames_read * channels);
+		if(pos >= frames_to_capture || pos + capture_size >= frames_to_capture) {
+			std::cout << "read complete" << std::endl;
+			return NULL;
+		}
+
+		*read_frames = capture_size;
+		return buffer + ((pos + capture_size) * channels);
+	
+			
+	}); 
+
+	std::cout << "starting playback" << std::endl;
+	short *buf = buffer;
+	unsigned long frames_remaining = frames_to_capture;
+	
+	playback_device->play([&](unsigned long played, unsigned long *remaining) -> short* {
+		frames_remaining -= played;
+		std::cout << frames_remaining << std::endl;
+		if(frames_remaining > 0) {
+			buf += (played * channels);
+			*remaining = frames_remaining;
+			return buf;
+		} else {
+			*remaining = 0;
+			return NULL;
+		}
+		
+	});
+
+	
 	
 	
 
@@ -55,7 +94,7 @@ int main(int argc, char *argv[]) {
 
 	
 	delete playback_device;
-	
+	delete capture_device;
 	
 	return 0;
 }

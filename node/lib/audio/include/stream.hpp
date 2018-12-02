@@ -17,7 +17,7 @@ namespace audio {
 			~stream();
 			
 			void open(snd_pcm_stream_t type);
-			
+			virtual void close();
 		private:
 			std::string device_descriptor;
 			snd_pcm_hw_params_t *hw_parameters = NULL;

@@ -13,7 +13,8 @@ namespace audio {
 		public:
 		audio_exception(const string& msg, int err) : m_msg(msg) {
 			string err_message(snd_strerror(err));
-			m_msg += " alsa error: " + err_message;
+			m_msg += (" (" + std::to_string(err) + ":");
+			m_msg += " " + err_message + ")";
 		}
 
 		audio_exception(const string& msg) : m_msg(msg) {};

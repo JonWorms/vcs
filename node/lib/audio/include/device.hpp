@@ -4,6 +4,7 @@
 #include "alsa/asoundlib.h"
 #include <string>
 #include <vector>
+#include <map>
 #include <iostream>
 #include "file.hpp"
 #include "input_stream.hpp"
@@ -32,21 +33,18 @@ namespace audio {
 
 		void get_num_io();
 
-		
 
-		
+			
+
 		
 	public:
 		static int count();
-		static std::vector<device*> devices();
-	
+
 		
-	
 		device(int id);
 		~device();
 
 		std::string name();
-
 		
 		void play_file(file *f);
 		int get_num_inputs();
@@ -57,6 +55,9 @@ namespace audio {
 
 		
 	};
+
+	//static std::vector<device*> devices();
+
 	
 }
 

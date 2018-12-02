@@ -2,22 +2,37 @@
 
 using namespace audio;
 
-file::file(std::string path, int mode) {
-	snd_file_info.format = 0;
 
-	if(!(snd_file = sf_open(path.c_str(), mode,  &snd_file_info))) {
+
+
+
+
+file::file(std::string path) : rw_mode(AUDIO_FILE_MODE_READ) {
+	memset(&snd_file_info, 0, sizeof(snd_file_info));
+
+	if(!(snd_file = sf_open(path.c_str(), SFM_READ,  &snd_file_info))) {
 		throw audio_exception("could not open sound file");
-	}
+	}	
 
-	printf("opened file: %s\n", path.c_str());
-	printf("sample rate: %d\n", snd_file_info.samplerate);
-	printf("channels: %d\n", snd_file_info.channels);
-	printf("format: %d\n", snd_file_info.format);
-	printf("sections: %d\n", snd_file_info.sections);
-	printf("seekable: %d\n", snd_file_info.seekable);
-	
+	file::a_format = sndfile_format(snd_file_info.format);
 	
 }
+
+file::file(std::string path, audio::format f, unsigned int channels, unsigned int sample_rate) : rw_mode(AUDIO_FILE_MODE_WRITE), a_format(f) {
+	memset(&snd_file_info, 0, sizeof(snd_file_info));
+	memset(&ctx, 0, sizeof(ctx));
+
+	snd_file_info.format = (SF_FORMAT_WAV | format_sndfile(f));
+	snd_file_info.channels = channels;
+	snd_file_info.samplerate = sample_rate;
+
+	if(!(snd_file = sf_open(path.c_str(), SFM_WRITE,  &snd_file_info))) {
+		throw audio_exception("could not open sound file");
+	}	
+	
+}
+
+
 
 file::~file() {
 	sf_close(snd_file);
@@ -31,37 +46,26 @@ unsigned int file::sample_rate() {
 	return (unsigned int)snd_file_info.samplerate;
 }
 
-snd_pcm_sframes_t file::frames() {
+unsigned int file::frames() {
 	return snd_file_info.frames;
 } 
 
-snd_pcm_format_t file::format() {
-	int fmt = snd_file_info.format;
-	
-	if(fmt & SF_FORMAT_PCM_S8) {
-		return SND_PCM_FORMAT_S8;
-	}
-
-	if(fmt & SF_FORMAT_PCM_16) {
-
-		return SND_PCM_FORMAT_S16_LE;
-	}
-
-	if(fmt & SF_FORMAT_PCM_24) {
-		return SND_PCM_FORMAT_S24_LE;
-	}
-
-	
-	if(fmt & SF_FORMAT_PCM_32) {
-		return SND_PCM_FORMAT_S32_LE;
-	}
-
-	throw audio_exception("unknown file format");
-	
+audio::format file::format() {
+	return file::a_format;
 }
 
-short* file::load() {
-	short *file_data = (short*)malloc(sizeof(short*) * snd_file_info.channels * snd_file_info.frames);
-	sf_read_short(snd_file, file_data, snd_file_info.frames);
+short* file::read_data() {
+	
+	short *file_data = (short*) malloc(snd_file_info.channels * snd_file_info.frames * sizeof(short));
+	sf_readf_short(snd_file, file_data, snd_file_info.frames);
 	return file_data;
+
+}
+
+unsigned long file::write_data(short* data, unsigned long frames) {
+	return sf_writef_short(snd_file, data, frames);
+}
+
+void file::flush() {
+	sf_write_sync(snd_file);
 }

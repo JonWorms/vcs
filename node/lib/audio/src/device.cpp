@@ -59,7 +59,6 @@ string device::name() {
 		return NULL;
 	}
 
-	
 	if(!snd_ctl_card_info(handle, info)) {
 		device_name.assign(snd_ctl_card_info_get_name(info)); // pretty sure this does not leak
 	}
@@ -123,7 +122,7 @@ int device::get_num_outputs() {
 
 void device::play_file(audio::file *file) {
 	output_stream os(device_descriptor, file->format(), file->sample_rate(), file->channels());
-	short *fd = file->load();
+	short *fd = file->read_data();
 	short *front = fd;
 	unsigned int chnls = file->channels();
 	snd_pcm_sframes_t frames_remaining = file->frames();
@@ -137,19 +136,12 @@ void device::play_file(audio::file *file) {
 		} else {
 			*remaining = 0;
 			free(fd);
+			os.close();
 			return NULL;
 		}
-		
-
-		
-		
-
-		
 	});
-	os.close();
+	
 }
-
-
 
 
 
@@ -163,7 +155,11 @@ int device::count() {
 	return count;	
 }
 
-vector<device*> device::devices() {
+/*
+vector<device*> audio::devices() {
+
+	
+
 	vector<device*> d;
 
 	int card = -1;
@@ -173,3 +169,4 @@ vector<device*> device::devices() {
 	 
 	return d;
 }
+*/

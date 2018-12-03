@@ -2,9 +2,7 @@ cmake_minimum_required (VERSION 3.7.2)
 
 project (vcs)
 
-set (PROJECT_SRC_DIR src)
-set (PROJECT_INC_DIR include)
-set (PROJECT_LIB_DIR lib)
+set (LIB lib)
 
 
 #find_library(LIB_ALSA asound)
@@ -15,20 +13,18 @@ set (PROJECT_LIB_DIR lib)
 #endif()
 
 
-set (AUDIO "${PROJECT_LIB_DIR}/audio")
-
-include_directories(${PROJECT_INC_DIR}
-					"${AUDIO}/include")
-
-
+set (AUDIO "${LIB}/audio")
 add_subdirectory (${AUDIO})
-set (LIBS ${LIBS} audio)
+
+set (STT "${LIB}/stt")
+add_subdirectory (${STT})
+
+include_directories("${AUDIO}/include"
+					"${STT}/include"
+					"${PROJECT_BINARY_DIR}")
 
 
 
+add_executable( vcs "src/main.cpp" )
 
-set (MAIN "${PROJECT_SRC_DIR}/main.cpp")
-
-add_executable( vcs ${MAIN} )
-
-target_link_libraries(vcs ${LIBS})
+target_link_libraries(vcs "audio" "stt")

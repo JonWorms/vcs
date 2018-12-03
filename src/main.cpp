@@ -9,16 +9,15 @@
 
 #include "file.hpp"
 #include "audio.hpp"
+#include "language_model.hpp"
 
 
 int main(int argc, char *argv[]) {
 
-	printf("number of audio devices: %d\n", audio::device::count());
-
 
 	audio::device *playback_device = audio::get_device_named("USB Audio DAC");
 	audio::device *capture_device = audio::get_device_named("USB audio CODEC");
-
+	stt::language_model::languages();
 
 	
 	if(!playback_device) {

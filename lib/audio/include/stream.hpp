@@ -1,7 +1,7 @@
 #ifndef STREAM_HPP
 #define STREAM_HPP
 
-#include "alsa/asoundlib.h"
+#include "asoundlib.h"
 #include "audio_exception.hpp"
 #include "formats.hpp"
 

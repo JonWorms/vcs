@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <string>
-#include "alsa/asoundlib.h"
+#include "asoundlib.h"
 
 namespace audio {
 

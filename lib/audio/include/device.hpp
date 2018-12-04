@@ -1,7 +1,7 @@
 #ifndef DEVICE_HPP
 #define DEVICE_HPP
 
-#include "alsa/asoundlib.h"
+#include "asoundlib.h"
 #include <string>
 #include <vector>
 #include <map>

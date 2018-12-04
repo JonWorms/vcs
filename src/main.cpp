@@ -7,17 +7,19 @@
 #include <iostream>
 #include <algorithm>
 
-#include "file.hpp"
 #include "audio.hpp"
-#include "language_model.hpp"
+#include "stt.hpp"
+
+stt::engine stt_engine;
 
 
 int main(int argc, char *argv[]) {
-
-
 	audio::device *playback_device = audio::get_device_named("USB Audio DAC");
 	audio::device *capture_device = audio::get_device_named("USB audio CODEC");
-	stt::language_model::languages();
+
+	
+	stt::language_model lm = stt::language_model::languages().front();
+	stt_engine.set_model(lm);
 
 	
 	if(!playback_device) {

@@ -13,18 +13,10 @@ set (LIB lib)
 #endif()
 
 
-set (AUDIO "${LIB}/audio")
-add_subdirectory (${AUDIO})
+add_subdirectory ("${LIB}/audio")
+add_subdirectory ("${LIB}/stt")
 
-set (STT "${LIB}/stt")
-add_subdirectory (${STT})
-
-include_directories("${AUDIO}/include"
-					"${STT}/include"
-					"${PROJECT_BINARY_DIR}")
-
-
-
+include_directories(${PROJECT_BINARY_DIR} ${audio_INCLUDE_DIRS} ${stt_INCLUDE_DIRS})
 add_executable( vcs "src/main.cpp" )
+target_link_libraries(vcs audio stt)
 
-target_link_libraries(vcs "audio" "stt")

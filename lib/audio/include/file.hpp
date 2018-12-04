@@ -6,7 +6,7 @@
 #include <fstream>
 #include "sndfile.h"
 #include "audio_exception.hpp"
-#include "alsa/asoundlib.h"
+#include "asoundlib.h"
 #include "formats.hpp"
 
 
@@ -39,7 +39,7 @@ namespace audio {
 		
 		audio::format format();
 		unsigned int channels();
-		unsigned int  frames();
+		unsigned int frames();
 		unsigned int sample_rate();
 
 		// reads the whole file, returns a pointer to the data, does not retain ownership of returned data

@@ -1,0 +1,4 @@
+#ifndef STT_CONFIG_H
+#define STT_CONFIG_H
+#define CMUSPHINX_MODEL_DIR "@CMUSPHINX_MODEL_DIR@"
+#endif

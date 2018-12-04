@@ -1,7 +1,7 @@
 #ifndef FORMATS_HPP
 #define FORMATS_HPP
 
-#include "alsa/asoundlib.h"
+#include "asoundlib.h"
 #include "sndfile.h"
 #include "audio_exception.hpp"
 

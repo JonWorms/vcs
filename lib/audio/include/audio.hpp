@@ -8,6 +8,8 @@
 
 namespace audio {
 
+
+
 	static std::vector<audio::device*> devices() {
 		std::vector<audio::device*> d;
 

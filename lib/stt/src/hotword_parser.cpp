@@ -52,7 +52,7 @@ cmd_ln_t* init(const char *hmm, const char *dict, const char *mllr) {
 
 
 
-hotword_parser::hotword_parser(vector<string> hotwords, engine *eng) {
+hotword_parser::hotword_parser(engine *eng) {
 	
 	if((decoder = eng->create_decoder()) == NULL) {
 		throw stt::exception("could not initialize cmusphinx decoder");
@@ -69,4 +69,18 @@ hotword_parser::~hotword_parser() {
 
 void hotword_parser::add_hotword(string hotword) {
 	
+}
+
+void hotword_parser::process_data(short *buffer, size_t buffer_length) {
+	ps_process_raw(decoder, buffer, buffer_length, false, false);
+	in_speech = ps_get_in_speech(decoder);
+	utt_started = (in_speech || utt_started);
+	if(!in_speech && utt_started) {
+		ps_end_utt(decoder);
+		int score = 0;
+		const char *utt_hyp = ps_get_hyp(decoder, &score);
+		printf("score: %d, hypothesis: %s, id: %s\n", score, utt_hyp);
+		ps_start_utt(decoder);
+		utt_started = false;
+	}
 }

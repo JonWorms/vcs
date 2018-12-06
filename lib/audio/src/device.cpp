@@ -144,11 +144,35 @@ void device::configure(audio::format f, unsigned int sr, unsigned int ch) {
 	device::channels = ch;
 }
 
-void device::capture(input_stream::callback cb) {
-	input_stream stream(device_descriptor, device::format, device::sample_rate, device::channels);
-	stream.open(cb);
-	stream.close();
+
+void device::capture(frames_t frames, short *to_buffer) {
+	if(capture_stream == nullptr) {
+		capture_stream = new input_stream(device_descriptor, format, sample_rate, channels);
+		capture_stream->open();
+	}
+
+	frames_t read = 0;
+	while(frames > 0) {
+		read = capture_stream->read(frames, to_buffer);
+		frames -= read;
+		to_buffer += read;
+	}	
 }
+
+
+/*
+output_stream* device::create_output_stream() {
+	output_stream *os = new output_stream(device_descriptor, format, sample_rate, channels);
+	os->open();
+	return os;
+}
+
+input_stream* device::create_input_stream() {
+	input_stream *is = new input_stream(device_descriptor, format, sample_rate, channels);
+	is->open();
+	return is;
+}
+*/
 
 void device::play(output_stream::callback cb) {
 	output_stream stream(device_descriptor, device::format, device::sample_rate, device::channels);

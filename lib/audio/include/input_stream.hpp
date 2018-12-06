@@ -13,8 +13,10 @@ namespace audio {
 		input_stream(char *descriptor, audio::format format, unsigned int sample_rate, unsigned int channels);
 		~input_stream();
 
-		void open(callback cb);
+		void open();
 		void close() override;
+
+		frames_t read(frames_t frames, short *to_buffer);
 
 	};
 

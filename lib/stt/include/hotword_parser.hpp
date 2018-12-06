@@ -12,13 +12,16 @@ namespace stt {
 
 	class hotword_parser {
 		public:
-			hotword_parser(std::vector<std::string> hotwords, engine *eng);
+			hotword_parser(engine *eng);
 			~hotword_parser();
 			void add_hotword(std::string hotword);
+
+			void process_data(short *buffer, size_t buffer_size);
 			
 		private:
 			ps_decoder_t *decoder;
-			
+			bool in_speech = false;
+			bool utt_started = false;
 		
 	};
 

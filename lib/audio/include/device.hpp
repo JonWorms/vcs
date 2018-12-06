@@ -29,11 +29,20 @@ namespace audio {
 		int get_num_outputs();
 
 		void configure(audio::format f, unsigned int sample_rate, unsigned int channels);
-		void capture(audio::input_stream::callback cb);
+		//void capture(audio::input_stream::callback cb);
+		void capture(frames_t frames, short *to_buffer);
 
+		//audio::output_stream* create_output_stream();
+		//audio::input_stream* create_input_stream();
+		
 		void play(audio::output_stream::callback cb);
 		void play_data(short *data, unsigned long total_frames);
 		void play_file(file *f);
+
+				// audio format
+		audio::format format;
+		unsigned int channels;
+		unsigned int sample_rate;
 
 	private:
 	
@@ -45,9 +54,9 @@ namespace audio {
 
 
 		// audio format
-		audio::format format;
-		unsigned int channels;
-		unsigned int sample_rate;
+		//audio::format format;
+		//unsigned int channels;
+		//unsigned int sample_rate;
 
 		int num_inputs = -1;
 		int num_outputs = -1;
@@ -60,6 +69,8 @@ namespace audio {
 
 		void get_num_io();
 
+		audio::input_stream *capture_stream = nullptr;
+		audio::output_stream *playback_stream = nullptr;
 
 			
 

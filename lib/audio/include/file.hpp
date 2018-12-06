@@ -9,7 +9,6 @@
 #include "asoundlib.h"
 #include "formats.hpp"
 
-
 #define AUDIO_FILE_MODE_READ 1
 #define AUDIO_FILE_MODE_WRITE 2
 

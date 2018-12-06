@@ -8,10 +8,10 @@
 namespace audio {
 
 	enum format {
-		pcm_s8,
-		pcm_s16_le,
-		pcm_s24_le,
-		pcm_s32_le,
+		pcm_s8 = 1,
+		pcm_s16_le = 2,
+		pcm_s24_le = 3,
+		pcm_s32_le = 4
 	};
 
 	static snd_pcm_format_t format_alsa(audio::format fmt) {

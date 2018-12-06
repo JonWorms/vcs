@@ -10,6 +10,9 @@ stream::~stream() {
 	snd_pcm_hw_params_free(hw_parameters);
 }
 
+bool stream::is_open() {
+	return stream_open;
+}
 
 
 void stream::open_pcm_device(snd_pcm_stream_t type) {

@@ -23,9 +23,12 @@ file::file(std::string path, audio::format f, unsigned int channels, unsigned in
 	memset(&ctx, 0, sizeof(ctx));
 
 	snd_file_info.format = (SF_FORMAT_WAV | format_sndfile(f));
+	printf("0x%#08x\n", snd_file_info.format);
 	snd_file_info.channels = channels;
 	snd_file_info.samplerate = sample_rate;
 
+	printf("sample rate: %d\n", sample_rate);
+	printf("channels: %d\n", channels);
 	if(!(snd_file = sf_open(path.c_str(), SFM_WRITE,  &snd_file_info))) {
 		throw audio_exception("could not open sound file");
 	}	

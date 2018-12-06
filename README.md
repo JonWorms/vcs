@@ -35,10 +35,16 @@ Audio input can be reasonably handled with port audio.
 
 Step 1:
 	Implement hotword listening on the node software, for now it needs to consume audio, and after a hotword is detected, play the audio that was detected back to the user.
-
+		what I have so far:
+			audio can be captured to a ring buffer
 Step 2:
 	Implement the basics for the server, it should listen for connections from nodes and then process 15 or so seconds of data from the node, displaying the parsed text in a log of some sort
 	Modify the node to stream audio data to the server and the necessary protocols to return to hotword listening
 	
 Step 3:
 	Not sure yet
+
+
+Things that should (probably) be done:
+	sample rate conversion, while testing I found that my usb speakers do not seem to support sample rates below 32000, when audio is played below that sample rate it sounds like the chipmunks
+	to resolve this, perhaps selection of plugins configured in alsa to do the sample rate conversion would work

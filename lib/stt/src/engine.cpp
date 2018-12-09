@@ -7,7 +7,7 @@ using namespace std;
 engine::engine(){}
 
 void engine::set_model(language_model model) {
-
+	std::cout << "setting language model" << std::endl;
 	cmd_ln_free(); // free global configuration (if exists)
 	if(model.mllr() == NULL) {
 		configuration = cmd_ln_init(NULL, ps_args(), TRUE, "-hmm", model.hmm(), "-lm", model.lm(), "-dict", model.dict(), "-logfn", "/dev/null", NULL);				

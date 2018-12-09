@@ -8,6 +8,7 @@ find_library(POCKETSPHINX NAMES pocketsphinx)
 if(NOT POCKETSPHINX) 
 	message(FATAL_ERROR "could not find pocketsphinx")
 endif()
+message(STATUS ${POCKETSPHINX})
 
 # pocketsphinx include
 find_path(POCKETSPHINX_INCLUDE "pocketsphinx/pocketsphinx.h")

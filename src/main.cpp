@@ -9,23 +9,28 @@
 #include <string>
 
 #include "client.hpp"
+//#include "server.hpp"
 
 vcs::client client;
 
 
 int main(int argc, char *argv[]) {
+	audio::device *capture_device = audio::get_device_named("USB audio CODEC");
+	capture_device->configure(audio::format::pcm_s16_le, 16000, 1);
+	
+	audio::device *playback_device = audio::get_device_named("USB Audio DAC");
+		
+
 	std::string model_path(CMUSPHINX_MODEL_DIR);
 	model_path += "/en-us";
-	std::cout << model_path << std::endl;
 	
 	stt::language_model model(model_path);
+
+	client.set_input_device(capture_device);
 	client.set_model(model);
 	client.set_buffer_settings(128, 4096);
-	audio::device *capture_device = audio::get_device_named("USB audio CODEC");
-	audio::device *playback_device = audio::get_device_named("USB Audio DAC");
+	client.set_hotword("computer");
 	
-	capture_device->configure(audio::format::pcm_s16_le, 16000, 1);
-	client.set_input_device(capture_device);
 	
 	client.start();
 	
@@ -116,11 +121,10 @@ int main(int argc, char *argv[]) {
 	delete playback_device;
 	delete capture_device;
 	*/
-	sleep(10);
+	sleep(60);
 	client.stop();
 
-	audio::file test("test.wav");
-	playback_device->play_file(&test);
+
 
 	
 	return 0;

@@ -5,6 +5,9 @@ mllr_matrix
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
 
+## Submodules
+Simple-Web-Server/
+
 ## Build generated
 build/
 DerivedData/

@@ -57,7 +57,6 @@ hotword_parser::hotword_parser(engine *eng) {
 	if((decoder = eng->create_decoder()) == NULL) {
 		throw stt::exception("could not initialize cmusphinx decoder");
 	}
-
 	
 }
 
@@ -67,8 +66,15 @@ hotword_parser::~hotword_parser() {
 	}
 }
 
-void hotword_parser::add_hotword(string hotword) {
-	
+void hotword_parser::set_hotword(string hotword) {
+	std::cout << "setting hotword: " + hotword << std::endl;
+	if(decoder == NULL) {
+		throw stt::exception("decoder not initialized");
+	}
+	ps_end_utt(decoder);
+	ps_set_keyphrase(decoder, "hotword", hotword.c_str());
+	ps_set_search(decoder, "hotword");
+	ps_start_utt(decoder);
 }
 
 void hotword_parser::process_data(short *buffer, size_t buffer_length) {
@@ -79,7 +85,7 @@ void hotword_parser::process_data(short *buffer, size_t buffer_length) {
 		ps_end_utt(decoder);
 		int score = 0;
 		const char *utt_hyp = ps_get_hyp(decoder, &score);
-		printf("score: %d, hypothesis: %s, id: %s\n", score, utt_hyp);
+		printf("score: %d, hypothesis: %s\n", score, utt_hyp);
 		ps_start_utt(decoder);
 		utt_started = false;
 	}
